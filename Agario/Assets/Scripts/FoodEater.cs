@@ -275,4 +275,44 @@ public class FoodEater : MonoBehaviour
 			}
 		}
 	}
+
+    // Get the base scale used for size calculations
+    public Vector3 GetBaseScale()
+    {
+        return originalScale == Vector3.zero ? Vector3.one : originalScale;
+    }
+
+    // Set the base scale used for size calculations
+    public void SetBaseScale(Vector3 baseScale)
+    {
+        if (baseScale == Vector3.zero) baseScale = Vector3.one;
+        originalScale = baseScale;
+        UpdatePlayerSize();
+    }
+
+    // Clone sizing and radius config from another eater (to keep split cells identical)
+    public void CopyConfigFrom(FoodEater other)
+    {
+        if (other == null) return;
+        // Copy serialized tunables
+        this.baseEatRadius = other.baseEatRadius;
+        this.sizeMultiplier = other.sizeMultiplier;
+        this.pointsAtScaleOne = other.pointsAtScaleOne;
+        this.sizeBasePoints = other.sizeBasePoints;
+        this.radiusScaleMultiplier = other.radiusScaleMultiplier;
+        this.minSize = other.minSize;
+        this.maxSize = other.maxSize;
+        // Copy base scale
+        this.originalScale = other.GetBaseScale();
+        UpdatePlayerSize();
+    }
+
+    // Sync internal state from another eater without triggering size recalculation
+    public void SyncInternalStateFrom(FoodEater other)
+    {
+        if (other == null) return;
+        this.currentSize = other.currentSize;
+        this.currentEatRadius = other.currentEatRadius;
+        // Don't call UpdatePlayerSize() - just sync the values
+    }
 }

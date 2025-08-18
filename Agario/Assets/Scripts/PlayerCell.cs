@@ -7,6 +7,9 @@ public class PlayerCell : MonoBehaviour
 	[SerializeField] private float recombineDelay = 8f;
 	private float recombineReadyTime = 0f;
 	
+	[Header("Cell Properties")]
+	public float amount = 0f; // Public variable for amount tracking
+	
 	private CharcterMovement movement;
 	private FoodEater eater;
 	private SpriteRenderer spriteRenderer;

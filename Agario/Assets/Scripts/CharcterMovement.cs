@@ -175,4 +175,16 @@ public class CharcterMovement : MonoBehaviour
         minMoveSpeed = newMinSpeed;
         UpdateMovementSpeed();
     }
+
+    // Copy movement tunables from another movement component
+    public void CopyMoveConfigFrom(CharcterMovement other)
+    {
+        if (other == null) return;
+        this.baseMoveSpeed = other.baseMoveSpeed;
+        this.minMoveSpeed = other.minMoveSpeed;
+        this.speedReductionMultiplier = other.speedReductionMultiplier;
+        this.useMouseInput = other.useMouseInput;
+        this.useTouchInput = other.useTouchInput;
+        RefreshSpeed();
+    }
 }

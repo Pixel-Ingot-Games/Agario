@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-
+using System.Collections;
 public class PlayerAggregate : MonoBehaviour
 {
 	[Header("Cells Management")]
@@ -77,25 +77,43 @@ public class PlayerAggregate : MonoBehaviour
 		
 		// Halve points
 		float half = bestPoints * 0.5f;
-		best.SetPoints(half);
-		best.StartRecombineCooldown();
 		
 		// Instantiate new cell
 		Vector3 spawnPos = best.transform.position;
 		PlayerCell newCell = Instantiate(cellPrefab, spawnPos, Quaternion.identity, cellsParent != null ? cellsParent : transform);
-		newCell.SetPoints(half);
 		newCell.StartRecombineCooldown();
 		cells.Add(newCell);
 		
-		// Recalculate movement speeds explicitly on both cells
-		var bestMove = best.GetComponent<CharcterMovement>();
-		if (bestMove != null) bestMove.RefreshSpeed();
-		var newMove = newCell.GetComponent<CharcterMovement>();
-		if (newMove != null) newMove.RefreshSpeed();
+		// Copy sprite and color from parent to new cell
+		var parentSr = best.GetComponent<SpriteRenderer>();
+		var newSr = newCell.GetComponent<SpriteRenderer>();
+		if (parentSr != null && newSr != null)
+		{
+			newSr.sprite = parentSr.sprite;
+			newSr.color = parentSr.color;
+		}
+		
+		// Halve and transfer 'amount'
+		float parentAmount = best.amount;
+		float halfAmount = parentAmount * 0.5f;
+		best.amount = halfAmount;
+		newCell.amount = halfAmount;
+		
+		// HALVE POINTS FIRST - this will rescale the original cell
+		best.SetPoints(half);
+		
+		// Set points on new cell but DON'T let it scale yet
+		if (newCell.GetComponent<CharcterMovement>() != null)
+		{
+			newCell.GetComponent<CharcterMovement>().Points = half;
+		}
 		
 		// Launch new cell toward cursor
 		Vector3 worldTarget = GetCursorWorldPosition(spawnPos.z);
 		newCell.LaunchTowards(worldTarget, splitLaunchSpeed, splitLaunchDuration);
+		
+		// Start coroutine to sync scales in next frame
+		StartCoroutine(SyncCellScalesNextFrame(best, newCell));
 		
 		UpdateTotalPoints(true);
 	}
@@ -207,5 +225,36 @@ public class PlayerAggregate : MonoBehaviour
 	public IReadOnlyList<PlayerCell> GetCells()
 	{
 		return cells;
+	}
+	
+	// Coroutine to sync cell scales in the next frame
+	private IEnumerator SyncCellScalesNextFrame(PlayerCell originalCell, PlayerCell newCell)
+	{
+		// Wait for next frame to ensure original cell has finished scaling
+		yield return null;
+		
+		// Copy the exact scale from original cell to new cell
+		if (originalCell != null && newCell != null)
+		{
+			Vector3 targetScale = originalCell.transform.localScale;
+			newCell.transform.localScale = targetScale;
+			
+			// Sync the FoodEater's internal state to match the original cell
+			var originalEater = originalCell.GetComponent<FoodEater>();
+			var newEater = newCell.GetComponent<FoodEater>();
+			if (originalEater != null && newEater != null)
+			{
+				// Sync internal state without triggering size recalculation
+				newEater.SyncInternalStateFrom(originalEater);
+			}
+			
+			// Sync movement speeds
+			var originalMove = originalCell.GetComponent<CharcterMovement>();
+			var newMove = newCell.GetComponent<CharcterMovement>();
+			if (originalMove != null && newMove != null)
+			{
+				newMove.RefreshSpeed();
+			}
+		}
 	}
 }
