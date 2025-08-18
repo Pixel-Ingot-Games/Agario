@@ -106,7 +106,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseMoveSpeed: 5
   minMoveSpeed: 0.5
-  speedReductionMultiplier: 0.1
+  speedReductionMultiplier: 0.05
   useTouchInput: 1
   useMouseInput: 1
   Points: 0

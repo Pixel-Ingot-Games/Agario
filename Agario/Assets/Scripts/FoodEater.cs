@@ -23,6 +23,7 @@ public class FoodEater : MonoBehaviour
 	private float currentScore = 0;
 	private float currentSize;
 	private Vector3 originalScale;
+	private Vector3 constantBaseScale; // This never changes - used for consistent size calculations
 	private float currentEatRadius;
 	private Vector3 lastPosition;
 	
@@ -42,6 +43,8 @@ public class FoodEater : MonoBehaviour
 				originalScale = Vector3.one;
 			}
 		}
+		// Set constant base scale that never changes - this ensures consistent size calculations
+		constantBaseScale = originalScale;
 		currentEatRadius = baseEatRadius;
 		lastPosition = transform.position;
 	}
@@ -206,7 +209,7 @@ public class FoodEater : MonoBehaviour
 	void UpdatePlayerSize()
 	{
 		// Ensure non-zero base scale
-		Vector3 baseScale = originalScale;
+		Vector3 baseScale = constantBaseScale;
 		if (baseScale == Vector3.zero)
 		{
 			baseScale = Vector3.one;
@@ -334,6 +337,7 @@ public class FoodEater : MonoBehaviour
     {
         if (baseScale == Vector3.zero) baseScale = Vector3.one;
         originalScale = baseScale;
+        constantBaseScale = baseScale; // Also update the constant base scale
         UpdatePlayerSize();
     }
 

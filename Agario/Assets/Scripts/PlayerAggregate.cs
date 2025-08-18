@@ -101,6 +101,19 @@ public class PlayerAggregate : MonoBehaviour
 			newSr.color = parentSr.color;
 		}
 		
+		// CRITICAL: Copy FoodEater configuration to ensure both cells use identical base scales
+		var parentEater = best.GetComponent<FoodEater>();
+		var newEater = newCell.GetComponent<FoodEater>();
+		if (parentEater != null && newEater != null)
+		{
+			// Copy all sizing configuration
+			newEater.CopyConfigFrom(parentEater);
+			// Ensure both cells use the EXACT same base scale for size calculations
+			Vector3 sharedBaseScale = parentEater.GetBaseScale();
+			parentEater.SetBaseScale(sharedBaseScale);
+			newEater.SetBaseScale(sharedBaseScale);
+		}
+		
 		// Halve and transfer 'amount'
 		float parentAmount = best.amount;
 		float halfAmount = parentAmount * 0.5f;
