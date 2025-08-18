@@ -2,6 +2,6 @@ using UnityEngine;
 
 public class Food : MonoBehaviour
 {
-    public int point;
-    public bool eaten=false;
+	public float point;
+	public bool eaten=false;
 }

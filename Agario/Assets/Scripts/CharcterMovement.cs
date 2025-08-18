@@ -17,7 +17,7 @@ public class CharcterMovement : MonoBehaviour
     private float currentMoveSpeed;
     
     // Player stats
-    public int Points;
+    public float Points;
     
     void Start()
     {
@@ -110,6 +110,12 @@ public class CharcterMovement : MonoBehaviour
         
         // Apply speed reduction with minimum limit
         currentMoveSpeed = Mathf.Max(baseMoveSpeed - speedReduction, minMoveSpeed);
+    }
+    
+    // Public method to force recompute speed immediately when Points changes externally
+    public void RefreshSpeed()
+    {
+        UpdateMovementSpeed();
     }
     
     // Public method to set target position programmatically
