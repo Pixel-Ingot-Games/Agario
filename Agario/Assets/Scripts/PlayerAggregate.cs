@@ -15,6 +15,13 @@ public class PlayerAggregate : MonoBehaviour
 	[SerializeField] private float splitLaunchDuration = 0.2f;
 	[SerializeField] private KeyCode splitKey = KeyCode.Space;
 	
+	[Header("Eject Settings")]
+	[SerializeField] private GameObject ejectPrefab;
+	[SerializeField] private float ejectMinPoints = 10f; // Minimum points required to eject
+	[SerializeField] private float ejectForce = 15f; // Force applied to ejected cell
+	[SerializeField] private float ejectPointCost = 5f; // Points lost when ejecting
+	[SerializeField] private KeyCode ejectKey = KeyCode.W;
+	
 	[Header("Merge Settings")]
 	[SerializeField] private float mergeCheckRate = 0.1f;
 	private float nextMergeCheck;
@@ -43,6 +50,7 @@ public class PlayerAggregate : MonoBehaviour
 	void Update()
 	{
 		HandleSplitInput();
+		HandleEjectInput();
 		HandleMergeTick();
 		ResolveOverlaps();
 		// Recompute totals so HUD updates when any cell eats
@@ -118,6 +126,58 @@ public class PlayerAggregate : MonoBehaviour
 		UpdateTotalPoints(true);
 	}
 	
+	void HandleEjectInput()
+	{
+		if (!Input.GetKeyDown(ejectKey)) return;
+		if (ejectPrefab == null)
+		{
+			Debug.LogWarning("Eject prefab not assigned!");
+			return;
+		}
+		
+		// Find the biggest cell that can eject
+		PlayerCell best = null;
+		float bestPoints = 0f;
+		foreach (var c in cells)
+		{
+			float p = c.GetPoints();
+			if (p >= ejectMinPoints && p > bestPoints)
+			{
+				best = c;
+				bestPoints = p;
+			}
+		}
+		if (best == null) return;
+		
+		// Spawn eject cell in mouse direction
+		Vector3 spawnPos = best.transform.position;
+		Vector3 worldTarget = GetCursorWorldPosition(spawnPos.z);
+		Vector3 direction = (worldTarget - spawnPos).normalized;
+		
+		GameObject ejectedCell = Instantiate(ejectPrefab, spawnPos, Quaternion.identity);
+		
+		// Copy color from parent cell
+		var parentSr = best.GetComponent<SpriteRenderer>();
+		var ejectedSr = ejectedCell.GetComponent<SpriteRenderer>();
+		if (parentSr != null && ejectedSr != null)
+		{
+			ejectedSr.color = parentSr.color;
+		}
+		
+		// Set movement direction for the ejected cell
+		EjectedCell ejectedCellScript = ejectedCell.GetComponent<EjectedCell>();
+		if (ejectedCellScript != null)
+		{
+			ejectedCellScript.SetMoveDirection(direction);
+		}
+		
+		// Reduce parent cell's points by the eject cost
+		float newPoints = bestPoints - ejectPointCost;
+		best.SetPoints(newPoints);
+		
+		UpdateTotalPoints(true);
+	}
+	
 	Vector3 GetCursorWorldPosition(float z)
 	{
 		Camera cam = Camera.main != null ? Camera.main : FindObjectOfType<Camera>();
@@ -150,9 +210,11 @@ public class PlayerAggregate : MonoBehaviour
 		float sumR = a.GetRadius() + b.GetRadius();
 		if (dist > sumR) return;
 		
-		// Merge: add points, keep 'a', remove 'b'
+		// Merge: add points and amount, keep 'a', remove 'b'
 		float mergedPoints = a.GetPoints() + b.GetPoints();
+		float mergedAmount = a.amount + b.amount;
 		a.SetPoints(mergedPoints);
+		a.amount = mergedAmount;
 		
 		cells.Remove(b);
 		Destroy(b.gameObject);

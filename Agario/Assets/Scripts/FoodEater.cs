@@ -91,6 +91,15 @@ public class FoodEater : MonoBehaviour
 				{
 					EatFood(foodCollider.gameObject, foodScript);
 				}
+				// Check if it's an ejected cell
+				else
+				{
+					EjectedCell ejectedCell = foodCollider.GetComponent<EjectedCell>();
+					if (ejectedCell != null)
+					{
+						EatEjectedCell(foodCollider.gameObject, ejectedCell);
+					}
+				}
 			}
 		}
 	}
@@ -113,6 +122,15 @@ public class FoodEater : MonoBehaviour
 			if (foodScript != null && !foodScript.eaten)
 			{
 				EatFood(go, foodScript);
+			}
+			// Check if it's an ejected cell
+			else
+			{
+				EjectedCell ejectedCell = go.GetComponent<EjectedCell>();
+				if (ejectedCell != null)
+				{
+					EatEjectedCell(go, ejectedCell);
+				}
 			}
 		}
 	}
@@ -154,6 +172,35 @@ public class FoodEater : MonoBehaviour
 		
 		// Log eating (you can remove this in production)
 		Debug.Log($"Ate food worth {foodPoints} points! Score: {currentScore}, Size: {currentSize:F2}, Eat Radius: {currentEatRadius:F2}");
+	}
+	
+	void EatEjectedCell(GameObject ejectedCell, EjectedCell ejectedCellScript)
+	{
+		// Get points from the ejected cell script
+		float ejectedPoints = ejectedCellScript.GetPoints();
+		
+		// Increase score
+		currentScore += ejectedPoints;
+		
+		// Increase player's Points variable from CharcterMovement script
+		CharcterMovement playerMovement = GetComponent<CharcterMovement>();
+		if (playerMovement != null)
+		{
+			playerMovement.Points += ejectedPoints;
+			// Recompute size from total points to stay consistent with split/merge
+			SetSizeFromPoints(playerMovement.Points);
+		}
+		else
+		{
+			// Fallback: if no movement component, approximate by mapping just current points
+			SetSizeFromPoints(ejectedPoints);
+		}
+		
+		// Destroy the ejected cell
+		Destroy(ejectedCell);
+		
+		// Log eating (you can remove this in production)
+		Debug.Log($"Ate ejected cell worth {ejectedPoints} points! Score: {currentScore}, Size: {currentSize:F2}, Eat Radius: {currentEatRadius:F2}");
 	}
 	
 	void UpdatePlayerSize()
