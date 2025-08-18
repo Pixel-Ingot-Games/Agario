@@ -45,6 +45,8 @@ public class PlayerAggregate : MonoBehaviour
 		HandleSplitInput();
 		HandleMergeTick();
 		ResolveOverlaps();
+		// Recompute totals so HUD updates when any cell eats
+		UpdateTotalPoints(false);
 	}
 	
 	float GetRequiredPointsToSplit()
