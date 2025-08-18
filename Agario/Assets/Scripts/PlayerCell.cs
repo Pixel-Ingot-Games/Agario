@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-
+using TMPro;
 public class PlayerCell : MonoBehaviour
 {
 	[Header("Recombine Settings")]
@@ -9,7 +9,7 @@ public class PlayerCell : MonoBehaviour
 	
 	[Header("Cell Properties")]
 	public float amount = 0f; // Public variable for amount tracking
-	
+	public TMP_Text amountText;
 	private CharcterMovement movement;
 	private FoodEater eater;
 	private SpriteRenderer spriteRenderer;
@@ -88,5 +88,8 @@ public class PlayerCell : MonoBehaviour
 			transform.position += dir * speed * Time.deltaTime;
 			yield return null;
 		}
+	}
+	void Update(){
+		amountText.text="$"+amount.ToString();
 	}
 }

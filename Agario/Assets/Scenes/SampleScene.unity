@@ -1324,6 +1324,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Circle
       objectReference: {fileID: 0}
+    - target: {fileID: 5179815811996776888, guid: 49008ee602c4b3b4fb001019fc74bd8e, type: 3}
+      propertyPath: amount
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5844170360647209838, guid: 49008ee602c4b3b4fb001019fc74bd8e, type: 3}
       propertyPath: minMoveSpeed
       value: 1
