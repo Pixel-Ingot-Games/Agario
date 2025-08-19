@@ -109,6 +109,10 @@ MonoBehaviour:
   speedReductionMultiplier: 0.05
   useTouchInput: 1
   useMouseInput: 1
+  useColliderBounds: 0
+  movementBounds: {fileID: 0}
+  minXY: {x: -40, y: -40}
+  maxXY: {x: 40, y: 40}
   Points: 0
 --- !u!114 &1014113729005175788
 MonoBehaviour:
