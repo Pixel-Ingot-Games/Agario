@@ -2846,9 +2846,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foodPool: {fileID: 1781012134}
-  initialSpawnCount: 1500
+  initialSpawnCount: 3000
   spawnRate: 0.01
-  maxFoodOnMap: 5000
+  maxFoodOnMap: 3000
   spawnsPerFrame: 10
   initialSpawnDelay: 0.1
   minX: -41.7
@@ -2897,7 +2897,7 @@ MonoBehaviour:
   foodPrefab: {fileID: 3780636007832682681, guid: e727516daa185c945aaeadf0a4959d3a, type: 3}
   poolSize: 3000
   expandPool: 1
-  maxPoolSize: 5000
+  maxPoolSize: 3000
 --- !u!114 &1781012135
 MonoBehaviour:
   m_ObjectHideFlags: 0

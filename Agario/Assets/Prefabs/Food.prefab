@@ -12,12 +12,13 @@ GameObject:
   - component: {fileID: 3263936786805745390}
   - component: {fileID: 5048381290462414261}
   - component: {fileID: -5517674137896991860}
+  - component: {fileID: 7347639455087011408}
   m_Layer: 8
   m_Name: Food
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &3229846734714132787
 Transform:
@@ -139,3 +140,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   point: 10
   eaten: 0
+--- !u!114 &7347639455087011408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3780636007832682681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0abe7fec0ee5e44aa9a90331db41174, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sprite: {fileID: 3263936786805745390}
+  materials:
+  - {fileID: 2100000, guid: ad85ae207c73ef647afeb3fac272b664, type: 2}
+  - {fileID: 2100000, guid: c8ac13ab0ba7cc548b5f97f2c23a090c, type: 2}
+  - {fileID: 2100000, guid: e23a35deac46c5e45800d94cb4f64730, type: 2}
+  - {fileID: 2100000, guid: 0858de9c0236fab42992711312273277, type: 2}
+  - {fileID: 2100000, guid: 552bcca1a7c37c3438baba913e3887e7, type: 2}
+  - {fileID: 2100000, guid: ee95967544609cf42bb67a52d2dd007e, type: 2}
+  - {fileID: 2100000, guid: 3bba470920fb9904a8770adf7ddcefd2, type: 2}

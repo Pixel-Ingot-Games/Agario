@@ -156,15 +156,15 @@ public class FoodSpawner : MonoBehaviour
         food.transform.localScale = Vector3.one * randomSize;
         
         // Random color
-        if (foodColors.Length > 0)
-        {
-            Color randomColor = foodColors[Random.Range(0, foodColors.Length)];
-            SpriteRenderer spriteRenderer = food.GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null)
-            {
-                spriteRenderer.color = randomColor;
-            }
-        }
+        // if (foodColors.Length > 0)
+        // {
+        //     Color randomColor = foodColors[Random.Range(0, foodColors.Length)];
+        //     SpriteRenderer spriteRenderer = food.GetComponent<SpriteRenderer>();
+        //     if (spriteRenderer != null)
+        //     {
+        //         spriteRenderer.color = randomColor;
+        //     }
+        // }
     }
     
     void CleanupDestroyedFood()
