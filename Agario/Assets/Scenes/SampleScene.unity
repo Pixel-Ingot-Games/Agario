@@ -1108,7 +1108,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 1, g: 0, b: 0.91055393, a: 0}
+  m_BackGroundColor: {r: 1, g: 0, b: 0.05043316, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -2073,7 +2073,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1127079144}
   - component: {fileID: 1127079143}
-  - component: {fileID: 1127079142}
   - component: {fileID: 1127079141}
   m_Layer: 0
   m_Name: Camera
@@ -2126,14 +2125,6 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
---- !u!81 &1127079142
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1127079140}
-  m_Enabled: 1
 --- !u!20 &1127079143
 Camera:
   m_ObjectHideFlags: 0
@@ -2613,7 +2604,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1591805189
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3011,7 +3002,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 916885404142294133, guid: 49008ee602c4b3b4fb001019fc74bd8e, type: 3}
       propertyPath: m_fontSize
-      value: 0.2
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 916885404142294133, guid: 49008ee602c4b3b4fb001019fc74bd8e, type: 3}
       propertyPath: m_fontAsset
@@ -3120,10 +3111,6 @@ PrefabInstance:
     - target: {fileID: 7214405619588505455, guid: 49008ee602c4b3b4fb001019fc74bd8e, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -0.047999993
-      objectReference: {fileID: 0}
-    - target: {fileID: 7224907714879509246, guid: 49008ee602c4b3b4fb001019fc74bd8e, type: 3}
-      propertyPath: m_Layer
-      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8284843567290166731, guid: 49008ee602c4b3b4fb001019fc74bd8e, type: 3}
       propertyPath: m_Color.b

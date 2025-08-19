@@ -13,6 +13,7 @@ public class CamManager : MonoBehaviour
 	
 	float _targetZoom;
 	bool _subscribed;
+	Transform _followProxy; // centroid of all cells
 	
 	void Start(){
 		if (camera != null)
@@ -20,6 +21,11 @@ public class CamManager : MonoBehaviour
 			camera.Lens.ModeOverride = LensSettings.OverrideModes.Orthographic;
 			camera.Lens.OrthographicSize = minZoom;
 			_targetZoom = minZoom;
+		}
+		EnsureFollowProxy();
+		if (camera != null && _followProxy != null)
+		{
+			camera.Follow = _followProxy;
 		}
 	}
 	
@@ -39,9 +45,42 @@ public class CamManager : MonoBehaviour
 			score = target.GetComponent<PlayerAggregate>();
 			TryWireScore();
 		}
-		if (target != null && camera != null && camera.Follow != target.transform)
+		EnsureFollowProxy();
+		if (camera != null && _followProxy != null && camera.Follow != _followProxy)
 		{
-			camera.Follow = target.transform;
+			camera.Follow = _followProxy;
+		}
+		// Update proxy position to centroid of all cells, keep z clamped to -10
+		if (_followProxy != null)
+		{
+			const float desiredZ = -10f;
+			bool positioned = false;
+			if (score != null)
+			{
+				var cells = score.GetCells();
+				Vector3 sum = Vector3.zero;
+				int count = 0;
+				for (int i = 0; i < cells.Count; i++)
+				{
+					var c = cells[i];
+					if (c == null) continue;
+					sum += c.transform.position;
+					count++;
+				}
+				if (count > 0)
+				{
+					Vector3 center = sum / Mathf.Max(count, 1);
+					center.z = desiredZ;
+					_followProxy.position = center;
+					positioned = true;
+				}
+			}
+			if (!positioned && target != null)
+			{
+				Vector3 center = target.transform.position;
+				center.z = desiredZ;
+				_followProxy.position = center;
+			}
 		}
 		// Smoothly apply target zoom
 		if (camera != null)
@@ -52,6 +91,16 @@ public class CamManager : MonoBehaviour
 		if (score != null && !_subscribed)
 		{
 			OnPointsChanged(score.GetTotalPoints());
+		}
+	}
+
+	void LateUpdate(){
+		// Enforce camera z at -10 every frame
+		if (camera != null && camera.transform != null)
+		{
+			var pos = camera.transform.position;
+			pos.z = -10f;
+			camera.transform.position = pos;
 		}
 	}
 	
@@ -71,6 +120,16 @@ public class CamManager : MonoBehaviour
 		// Use sqrt for softer early growth
 		t = Mathf.Sqrt(t);
 		_targetZoom = Mathf.Lerp(minZoom, maxZoom, t);
+	}
+
+	void EnsureFollowProxy(){
+		if (_followProxy == null)
+		{
+			var go = new GameObject("CameraFollowProxy");
+			go.transform.SetParent(transform);
+			go.transform.position = transform.position;
+			_followProxy = go.transform;
+		}
 	}
 }
 
