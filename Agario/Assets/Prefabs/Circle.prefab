@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 488cebda418f1444ba343ed650481340, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  recombineDelay: 10
+  recombineDelay: 20
   amount: 0
   amountText: {fileID: 916885404142294133}
 --- !u!58 &-48834714342387395
@@ -357,8 +357,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: $1000
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d81418283b71df940b5aeb598b07d957, type: 2}
+  m_sharedMaterial: {fileID: -570247946645013153, guid: d81418283b71df940b5aeb598b07d957, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

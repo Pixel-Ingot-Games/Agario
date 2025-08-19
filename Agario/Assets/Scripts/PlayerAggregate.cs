@@ -74,72 +74,81 @@ public class PlayerAggregate : MonoBehaviour
 		
 		float required = GetRequiredPointsToSplit();
 		
-		// Split the largest eligible cell first
-		PlayerCell best = null;
-		float bestPoints = 0f;
+		// Collect all eligible cells to split
+		List<PlayerCell> eligible = new List<PlayerCell>();
 		foreach (var c in cells)
 		{
+			if (c == null) continue;
 			float p = c.GetPoints();
-			if (p >= required && p > bestPoints)
+			if (p >= required) eligible.Add(c);
+		}
+		if (eligible.Count == 0) return;
+		
+		// Respect max cells cap: only create as many new cells as we have slots for
+		int availableSlots = Mathf.Max(0, maxCells - cells.Count);
+		if (availableSlots <= 0) return;
+		
+		// If too many eligible, split the largest ones first
+		if (eligible.Count > availableSlots)
+		{
+			eligible.Sort((a, b) => b.GetPoints().CompareTo(a.GetPoints()));
+			eligible = eligible.GetRange(0, availableSlots);
+		}
+		
+		// Perform splits for each selected cell
+		foreach (var parent in eligible)
+		{
+			if (parent == null) continue;
+			float parentPoints = parent.GetPoints();
+			float half = parentPoints * 0.5f;
+			if (half < minPointsPerCell) continue;
+			
+			Vector3 spawnPos = parent.transform.position;
+			PlayerCell newCell = Instantiate(cellPrefab, spawnPos, Quaternion.identity, cellsParent != null ? cellsParent : transform);
+			newCell.StartRecombineCooldown();
+			cells.Add(newCell);
+			
+			// Copy sprite and color from parent to new cell
+			var parentSr = parent.GetComponent<SpriteRenderer>();
+			var newSr = newCell.GetComponent<SpriteRenderer>();
+			if (parentSr != null && newSr != null)
 			{
-				best = c;
-				bestPoints = p;
+				newSr.sprite = parentSr.sprite;
+				newSr.color = parentSr.color;
 			}
+			
+			// Copy FoodEater configuration to ensure both cells use identical base scales
+			var parentEater = parent.GetComponent<FoodEater>();
+			var newEater = newCell.GetComponent<FoodEater>();
+			if (parentEater != null && newEater != null)
+			{
+				newEater.CopyConfigFrom(parentEater);
+				Vector3 sharedBaseScale = parentEater.GetBaseScale();
+				parentEater.SetBaseScale(sharedBaseScale);
+				newEater.SetBaseScale(sharedBaseScale);
+			}
+			
+			// Halve and transfer 'amount'
+			float parentAmount = parent.amount;
+			float halfAmount = parentAmount * 0.5f;
+			parent.amount = halfAmount;
+			newCell.amount = halfAmount;
+			
+			// Apply points
+			parent.SetPoints(half);
+			var newMove = newCell.GetComponent<CharcterMovement>();
+			if (newMove != null)
+			{
+				newMove.Points = half;
+			}
+			
+			// Launch new cell toward cursor
+			Vector3 worldTarget = GetCursorWorldPosition(spawnPos.z);
+			newCell.LaunchTowards(worldTarget, splitLaunchSpeed, splitLaunchDuration);
+			
+			// Sync scales next frame
+			StartCoroutine(SyncCellScalesNextFrame(parent, newCell));
 		}
-		if (best == null) return;
-		
-		// Halve points
-		float half = bestPoints * 0.5f;
-		
-		// Instantiate new cell
-		Vector3 spawnPos = best.transform.position;
-		PlayerCell newCell = Instantiate(cellPrefab, spawnPos, Quaternion.identity, cellsParent != null ? cellsParent : transform);
-		newCell.StartRecombineCooldown();
-		cells.Add(newCell);
-		
-		// Copy sprite and color from parent to new cell
-		var parentSr = best.GetComponent<SpriteRenderer>();
-		var newSr = newCell.GetComponent<SpriteRenderer>();
-		if (parentSr != null && newSr != null)
-		{
-			newSr.sprite = parentSr.sprite;
-			newSr.color = parentSr.color;
-		}
-		
-		// CRITICAL: Copy FoodEater configuration to ensure both cells use identical base scales
-		var parentEater = best.GetComponent<FoodEater>();
-		var newEater = newCell.GetComponent<FoodEater>();
-		if (parentEater != null && newEater != null)
-		{
-			// Copy all sizing configuration
-			newEater.CopyConfigFrom(parentEater);
-			// Ensure both cells use the EXACT same base scale for size calculations
-			Vector3 sharedBaseScale = parentEater.GetBaseScale();
-			parentEater.SetBaseScale(sharedBaseScale);
-			newEater.SetBaseScale(sharedBaseScale);
-		}
-		
-		// Halve and transfer 'amount'
-		float parentAmount = best.amount;
-		float halfAmount = parentAmount * 0.5f;
-		best.amount = halfAmount;
-		newCell.amount = halfAmount;
-		
-		// HALVE POINTS FIRST - this will rescale the original cell
-		best.SetPoints(half);
-		
-		// Set points on new cell but DON'T let it scale yet
-		if (newCell.GetComponent<CharcterMovement>() != null)
-		{
-			newCell.GetComponent<CharcterMovement>().Points = half;
-		}
-		
-		// Launch new cell toward cursor
-		Vector3 worldTarget = GetCursorWorldPosition(spawnPos.z);
-		newCell.LaunchTowards(worldTarget, splitLaunchSpeed, splitLaunchDuration);
-		
-		// Start coroutine to sync scales in next frame
-		StartCoroutine(SyncCellScalesNextFrame(best, newCell));
 		
 		UpdateTotalPoints(true);
 	}
