@@ -1223,7 +1223,8 @@ MonoBehaviour:
   cells: []
   splitThreshold: 5
   minPointsPerCell: 5
-  splitLaunchSpeed: 20
+  splitAmountThreshold: 0.5
+  splitLaunchSpeed: 10
   splitLaunchDuration: 0.5
   splitKey: 32
   ejectPrefab: {fileID: 1273843202268818192, guid: 518704b960b3a7a4180af5f25acc6ac3, type: 3}
@@ -2845,9 +2846,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foodPool: {fileID: 1781012134}
-  initialSpawnCount: 150
-  spawnRate: 7
-  maxFoodOnMap: 500
+  initialSpawnCount: 1500
+  spawnRate: 0.01
+  maxFoodOnMap: 5000
   spawnsPerFrame: 10
   initialSpawnDelay: 0.1
   minX: -41.7
@@ -2894,9 +2895,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   foodPrefab: {fileID: 3780636007832682681, guid: e727516daa185c945aaeadf0a4959d3a, type: 3}
-  poolSize: 300
+  poolSize: 3000
   expandPool: 1
-  maxPoolSize: 500
+  maxPoolSize: 5000
 --- !u!114 &1781012135
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3095,6 +3096,10 @@ PrefabInstance:
     - target: {fileID: 5844170360647209838, guid: 49008ee602c4b3b4fb001019fc74bd8e, type: 3}
       propertyPath: speedReductionMultiplier
       value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 6795441691897670184, guid: 49008ee602c4b3b4fb001019fc74bd8e, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.152
       objectReference: {fileID: 0}
     - target: {fileID: 7214405619588505455, guid: 49008ee602c4b3b4fb001019fc74bd8e, type: 3}
       propertyPath: m_SizeDelta.x

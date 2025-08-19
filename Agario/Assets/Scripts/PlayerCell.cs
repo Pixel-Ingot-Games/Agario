@@ -90,6 +90,6 @@ public class PlayerCell : MonoBehaviour
 		}
 	}
 	void Update(){
-		amountText.text="$"+amount.ToString();
+		amountText.text = "$" + amount.ToString("0.00");
 	}
 }

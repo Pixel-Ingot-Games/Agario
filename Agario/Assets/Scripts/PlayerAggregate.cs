@@ -11,6 +11,7 @@ public class PlayerAggregate : MonoBehaviour
 	[Header("Split Settings")]
 	[SerializeField] private float splitThreshold = 20f;
 	[SerializeField] private float minPointsPerCell = 5f; // Each resulting half must be at least this many points
+	[SerializeField] private float splitAmountThreshold = 0f; // Minimum amount required to allow a split
 	[SerializeField] private float splitLaunchSpeed = 20f;
 	[SerializeField] private float splitLaunchDuration = 0.2f;
 	[SerializeField] private KeyCode splitKey = KeyCode.Space;
@@ -80,7 +81,9 @@ public class PlayerAggregate : MonoBehaviour
 		{
 			if (c == null) continue;
 			float p = c.GetPoints();
-			if (p >= required) eligible.Add(c);
+			float a = c.amount;
+			// Require enough amount so both halves are >= splitAmountThreshold
+			if (p >= required && a >= 2f * splitAmountThreshold) eligible.Add(c);
 		}
 		if (eligible.Count == 0) return;
 		
@@ -100,8 +103,12 @@ public class PlayerAggregate : MonoBehaviour
 		{
 			if (parent == null) continue;
 			float parentPoints = parent.GetPoints();
+			float parentAmount = parent.amount;
 			float half = parentPoints * 0.5f;
 			if (half < minPointsPerCell) continue;
+			// Ensure each resulting half will have at least splitAmountThreshold
+			float halfAmount = parentAmount * 0.5f;
+			if (halfAmount < splitAmountThreshold) continue;
 			
 			Vector3 spawnPos = parent.transform.position;
 			PlayerCell newCell = Instantiate(cellPrefab, spawnPos, Quaternion.identity, cellsParent != null ? cellsParent : transform);
@@ -129,8 +136,6 @@ public class PlayerAggregate : MonoBehaviour
 			}
 			
 			// Halve and transfer 'amount'
-			float parentAmount = parent.amount;
-			float halfAmount = parentAmount * 0.5f;
 			parent.amount = halfAmount;
 			newCell.amount = halfAmount;
 			
