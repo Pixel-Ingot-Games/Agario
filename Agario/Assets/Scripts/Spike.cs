@@ -11,14 +11,23 @@ public class Spike : MonoBehaviour
 	[SerializeField] private float checkRate = 0.2f; // How often to check for cells
 	[SerializeField] private LayerMask playerLayerMask = 1 << 6; // Player cells layer (adjust as needed)
 	
+	[Header("Growth Settings")]
+	[SerializeField] private float massScaleFactor = 0.02f; // How much size increases per mass unit
+	
 	[Header("Visual")]
 	[SerializeField] private Color spikeColor = Color.red;
 	[SerializeField] private float pulseSpeed = 2f;
 	[SerializeField] private float pulseAmount = 0.1f;
 	
 	private SpriteRenderer spriteRenderer;
-	private float originalScale;
+	private float initialBaseScale;
+	private float baseScale;
 	private float nextCheckTime;
+	
+	public float mass;
+	public LayerMask layerFood; // Assign to your Food layer (e.g., 1 << 8)
+	
+	private FoodSpawner foodSpawner;
 	
 	void Start()
 	{
@@ -27,22 +36,26 @@ public class Spike : MonoBehaviour
 		{
 			spriteRenderer.color = spikeColor;
 		}
-		originalScale = transform.localScale.x;
+		initialBaseScale = transform.localScale.x;
+		baseScale = initialBaseScale;
+		
+		foodSpawner = FindObjectOfType<FoodSpawner>();
 	}
 	
 	void Update()
 	{
-		// Pulsing effect to make spike more visible
+		// Pulsing effect to make spike more visible (pulse around the current base scale)
 		if (spriteRenderer != null)
 		{
 			float pulse = Mathf.Sin(Time.time * pulseSpeed) * pulseAmount;
-			transform.localScale = Vector3.one * (originalScale + pulse);
+			transform.localScale = Vector3.one * (baseScale + pulse);
 		}
 		
-		// Periodic check for nearby cells
+		// Periodic checks
 		if (Time.time >= nextCheckTime)
 		{
 			CheckForNearbyCells();
+			CheckForFoodOverlap();
 			nextCheckTime = Time.time + checkRate;
 		}
 	}
@@ -58,13 +71,57 @@ public class Spike : MonoBehaviour
 			{
 				float cellPoints = playerCell.GetPoints();
 				
-				// Only destroy cells above the threshold
+				// Only destroy/split cells above the threshold
 				if (cellPoints >= destroyThreshold)
 				{
 					DestroyCell(playerCell);
 				}
 			}
 		}
+	}
+	
+	void CheckForFoodOverlap()
+	{
+		// Consume Food or EjectedCell on the food layer within radius
+		if (layerFood.value == 0) return;
+		Collider2D[] foods = Physics2D.OverlapCircleAll(transform.position, checkRadius, layerFood);
+		for (int i = 0; i < foods.Length; i++)
+		{
+			var go = foods[i].gameObject;
+			if (!go.activeInHierarchy) continue;
+			
+			// Ejected cell support
+			var ejected = go.GetComponent<EjectedCell>();
+			if (ejected != null)
+			{
+				AbsorbMass(ejected.GetPoints());
+				Destroy(go);
+				continue;
+			}
+			
+			// Food from pool support
+			var food = go.GetComponent<Food>();
+			if (food != null && !food.eaten)
+			{
+				food.eaten = true;
+				AbsorbMass(food.point);
+				if (foodSpawner != null)
+				{
+					foodSpawner.ReturnFoodToPool(go);
+				}
+				else
+				{
+					Destroy(go);
+				}
+			}
+		}
+	}
+	
+	void AbsorbMass(float add)
+	{
+		if (add <= 0f) return;
+		mass += add;
+		baseScale = initialBaseScale + mass * massScaleFactor;
 	}
 	
 	void DestroyCell(PlayerCell cell)
@@ -98,10 +155,10 @@ public class Spike : MonoBehaviour
 			Vector3 spawnPos = centerPos + new Vector3(randomDir.x, randomDir.y, 0) * randomDistance;
 			
 			// Spawn food
-			GameObject food = Instantiate(foodPrefab, spawnPos, Quaternion.identity);
+			GameObject foodGo = Instantiate(foodPrefab, spawnPos, Quaternion.identity);
 			
 			// Set food points
-			Food foodScript = food.GetComponent<Food>();
+			Food foodScript = foodGo.GetComponent<Food>();
 			if (foodScript != null)
 			{
 				foodScript.point = pointsPerPiece;
