@@ -129,7 +129,7 @@ GameObject:
   m_Component:
   - component: {fileID: 28618981}
   - component: {fileID: 28618982}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Square (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1587,7 +1587,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 726182941}
-  m_Layer: 0
+  - component: {fileID: 726182943}
+  - component: {fileID: 726182942}
+  m_Layer: 9
   m_Name: Spike
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1615,6 +1617,61 @@ Transform:
   - {fileID: 1594142065}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &726182942
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 726182940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f7f822f345156454190eaa1dfdb74944, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  destroyThreshold: 20
+  foodPiecesSpawned: 8
+  foodSpawnRadius: 2
+  foodPrefab: {fileID: 3780636007832682681, guid: e727516daa185c945aaeadf0a4959d3a, type: 3}
+  spikeColor: {r: 1, g: 0, b: 0, a: 1}
+  pulseSpeed: 2
+  pulseAmount: 0.1
+--- !u!58 &726182943
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 726182940}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.71
 --- !u!1 &822060987
 GameObject:
   m_ObjectHideFlags: 0
@@ -1625,7 +1682,7 @@ GameObject:
   m_Component:
   - component: {fileID: 822060988}
   - component: {fileID: 822060989}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Square (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1712,7 +1769,7 @@ GameObject:
   m_Component:
   - component: {fileID: 909004848}
   - component: {fileID: 909004849}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Square (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2628,7 +2685,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1287324856}
   - component: {fileID: 1287324857}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Square (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2849,7 +2906,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1491615587}
   - component: {fileID: 1491615588}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Square (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3070,7 +3127,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1594142065}
   - component: {fileID: 1594142066}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Square (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3248,6 +3305,7 @@ GameObject:
   - component: {fileID: 1781012133}
   - component: {fileID: 1781012132}
   - component: {fileID: 1781012134}
+  - component: {fileID: 1781012135}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -3320,6 +3378,26 @@ MonoBehaviour:
   poolSize: 300
   expandPool: 1
   maxPoolSize: 500
+--- !u!114 &1781012135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1781012131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 766622412ff990e41af99f149544a97c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spikePrefab: {fileID: 0}
+  maxSpikes: 10
+  spawnRadius: 50
+  minDistanceFromCenter: 10
+  minDistanceBetweenSpikes: 5
+  spawnOnStart: 1
+  spawnDelay: 2
+  continuousSpawning: 0
 --- !u!1 &2109234247
 GameObject:
   m_ObjectHideFlags: 0
